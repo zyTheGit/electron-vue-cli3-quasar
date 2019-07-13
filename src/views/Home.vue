@@ -1,5 +1,5 @@
 <template>
-  <q-layout>
+  <q-layout @keydown='docKeydown'>
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -32,7 +32,6 @@
       :breakpoint="500"
       elevated
       no-swipe-open='true'
-      mini
     >
       <q-scroll-area class="fit">
         <q-list
@@ -102,6 +101,11 @@ export default {
   methods: {
     exit() {
       this.$router.push("/");
+    },
+    docKeydown(e){
+      if(e.keyCode==13){
+        alert('我被点击')
+      }
     }
   }
 };
