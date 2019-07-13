@@ -9,7 +9,7 @@
               :label-width="12"
               helper="Helper"
               :error="nameerror"
-              error-label="Oh buggers! You made a boo boo."
+              error-label="请输入用户名"
             >
               <q-input
                 v-model="name"
@@ -21,7 +21,7 @@
             </q-field>
             <q-field
               :error="passerror"
-              error-label="Oh buggers! You made a boo boo."
+              error-label="请输入密码"
             >
               <q-input
                 type='password'
@@ -38,7 +38,6 @@
               :loading='loading'
               color="primary"
               @click="clickMethod"
-              @keydown.enter="clickMethod"
               label="登 录"
             />
           </div>
@@ -48,6 +47,7 @@
   </div>
 </template>
 <script>
+const ipcRenderer = require("electron").ipcRenderer;
 export default {
   name: "login",
   data() {
@@ -58,6 +58,21 @@ export default {
       passerror: false,
       loading: false
     };
+  },
+  mounted() {
+    console.log(ipcRenderer);
+    ipcRenderer.on("main-process-messages", (event, arg) => {
+      console.log(event,arg);
+    });
+  },
+  created() {
+    window.addEventListener("keyup", e => {
+      if (e.keyCode == "13") {
+        this.clickMethod();
+      } else if (e.keyCode == "116") {
+        window.location.reload();
+      }
+    });
   },
   methods: {
     clickMethod() {
@@ -71,26 +86,31 @@ export default {
 };
 </script>
 <style scoped lang="stylus">
-.center {
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  transform: translate(-40%, -40%);
-  min-width: 400px;
-  min-height: 300px;
-  background-color: #fff;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  padding: 20px 30px;
-  box-shadow: 1px 1px 10px 3px #eee;
+.login {
+  width: 100vw;
+  height: 100vh;
 
-  h5 {
-    line-height: 50px;
-    margin: 0;
-  }
+  .center {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-40%, -40%);
+    min-width: 400px;
+    min-height: 300px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 20px 30px;
+    box-shadow: 1px 1px 10px 3px #eee;
 
-  .q-field {
-    width: 100%;
+    h5 {
+      line-height: 50px;
+      margin: 0;
+    }
+
+    .q-field {
+      width: 100%;
+    }
   }
 }
 </style>

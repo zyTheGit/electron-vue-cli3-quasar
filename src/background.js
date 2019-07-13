@@ -1,10 +1,14 @@
 'use strict'
-
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow,Menu  } from 'electron'
 import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
+
+import keyEvent from './electronPower/keyEvent'
+import munetemp from './electronPower/menutemp'
+
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -20,7 +24,7 @@ function createWindow () {
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    } })
+    }})
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -58,6 +62,9 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+
+  //创建菜单
+  Menu.setApplicationMenu(Menu.buildFromTemplate(munetemp));
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
@@ -66,7 +73,23 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  createWindow()
+
+  // const ret = globalShortcut.register('F9', (e) => {
+  //     //触发成功
+  //     console.log('我被触发')
+  // });
+  keyEvent.globalShortcutEvent({
+    keycode:'F9',
+    callback:()=>{
+      console.log('我被触发了'); 
+      win.webContents.send('main-process-messages', "我是事件发送者");
+    },
+    errCallback:()=>{
+      console.log('我被触发失败');
+    }
+  })
+    
+    createWindow();
 })
 
 // Exit cleanly on request from parent process in development mode.

@@ -21,6 +21,7 @@
           round
           dense
           icon="whatshot"
+          @click='exit'
         ></q-btn>
       </q-toolbar>
     </q-header>
@@ -31,7 +32,6 @@
       :width="200"
       :breakpoint="500"
       elevated
-      no-swipe-open='true'
     >
       <q-scroll-area class="fit">
         <q-list
